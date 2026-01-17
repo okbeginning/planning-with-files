@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2026-01-17
+
+### Added
+
+- **Windows PowerShell Support** (Fixes #32, #25)
+  - Created `check-complete.ps1` - PowerShell equivalent of bash script
+  - Created `init-session.ps1` - PowerShell session initialization
+  - Scripts available in all three locations (root, plugin, skills)
+  - OS-aware hook execution with automatic fallback
+
+- **CONTRIBUTORS.md**
+  - Recognizes all community contributors
+  - Lists code contributors with their impact
+  - Acknowledges issue reporters and testers
+  - Documents community forks
+
+### Fixed
+
+- **Stop Hook Windows Compatibility** (Fixes #32)
+  - Hook now detects Windows environment automatically
+  - Uses PowerShell scripts on Windows, bash on Unix/Linux/Mac
+  - Graceful fallback if PowerShell not available
+  - Tested on Windows 11 PowerShell and Git Bash
+
+- **Script Path Resolution** (Fixes #25)
+  - Improved `${CLAUDE_PLUGIN_ROOT}` handling across platforms
+  - Scripts now work regardless of installation method
+  - Added error handling for missing scripts
+
+### Changed
+
+- **SKILL.md Hook Configuration**
+  - Stop hook now uses multi-line command with OS detection
+  - Supports pwsh (PowerShell Core), powershell (Windows PowerShell), and bash
+  - Automatic fallback chain for maximum compatibility
+
+### Documentation
+
+- Added Windows troubleshooting guidance
+- Recognized community contributors in CONTRIBUTORS.md
+- Updated README to reflect Windows support
+
+### Thanks
+
+Special thanks to:
+- @mtuwei for reporting Windows compatibility issues (#32)
+- @aimasteracc for Kilocode support and PowerShell script contribution (PR #30)
+- All community members who tested and provided feedback
+
+---
+
 ## [2.1.2] - 2026-01-11
 
 ### Fixed

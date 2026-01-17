@@ -1,6 +1,6 @@
 ---
 name: planning-with-files
-version: "2.1.2"
+version: "2.2.0"
 description: Implements Manus-style file-based planning for complex tasks. Creates task_plan.md, findings.md, and progress.md. Use when starting complex multi-step tasks, research projects, or any task requiring >5 tool calls.
 user-invocable: true
 allowed-tools:
@@ -30,7 +30,12 @@ hooks:
   Stop:
     - hooks:
         - type: command
-          command: "${CLAUDE_PLUGIN_ROOT}/scripts/check-complete.sh"
+          command: |
+            if command -v pwsh &> /dev/null && [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OS" == "Windows_NT" ]]; then
+              pwsh -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/scripts/check-complete.ps1" 2>/dev/null || powershell -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/scripts/check-complete.ps1" 2>/dev/null || bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-complete.sh"
+            else
+              bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-complete.sh"
+            fi
 ---
 
 # Planning with Files
