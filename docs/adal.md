@@ -12,21 +12,34 @@ How to use planning-with-files with AdaL CLI (Sylph AI).
 
 ## Installation
 
-### Option 1: Copy to personal skills directory
+### Option 1: Via Plugin Marketplace (Recommended)
+
+```bash
+# Add the marketplace (one-time setup)
+/plugin marketplace add OthmanAdi/planning-with-files
+
+# Browse and install via dialog
+/plugin
+
+# Or install directly
+/plugin install planning-with-files@planning-with-files
+```
+
+### Option 2: Copy to personal skills directory
 
 ```bash
 git clone https://github.com/OthmanAdi/planning-with-files.git
 cp -r planning-with-files/.adal/skills/planning-with-files ~/.adal/skills/
 ```
 
-### Option 2: Copy to project skills directory
+### Option 3: Copy to project skills directory
 
 ```bash
 git clone https://github.com/OthmanAdi/planning-with-files.git
 cp -r planning-with-files/.adal/skills/planning-with-files .adal/skills/
 ```
 
-### Option 3: Windows (PowerShell)
+### Option 4: Windows (PowerShell)
 
 ```powershell
 git clone https://github.com/OthmanAdi/planning-with-files.git
@@ -41,76 +54,48 @@ AdaL supports three skill sources:
 
 | Source | Location | Use Case |
 |--------|----------|----------|
-| Personal | `~/.adal/skills/` | Your custom skills |
+| Personal | `~/.adal/skills/` | Your custom skills (highest priority) |
 | Project | `.adal/skills/` | Team skills shared via git |
-| Plugin | `~/.adal/plugin-cache/` | External skills from GitHub |
-
----
-
-## Important: Hook Compatibility
-
-> **Note:** Hooks (PreToolUse, PostToolUse, Stop, SessionStart) may have limited support in AdaL depending on your version.
-
-### What works in AdaL:
-
-- Core 3-file planning pattern
-- Templates (task_plan.md, findings.md, progress.md)
-- All planning rules and guidelines
-- The 2-Action Rule
-- The 3-Strike Error Protocol
-- Read vs Write Decision Matrix
-- Scripts for manual execution
-
-### What may vary:
-
-- Hook execution (check AdaL documentation for hook support)
-
----
-
-## Manual Workflow for AdaL
-
-If hooks are not supported, follow the pattern manually:
-
-### 1. Create planning files first
-
-Before any complex task:
-```
-Create task_plan.md, findings.md, and progress.md using the planning-with-files templates.
-```
-
-### 2. Re-read plan before decisions
-
-Periodically ask:
-```
-Please read task_plan.md to refresh the goals before continuing.
-```
-
-### 3. Update files after phases
-
-After completing work:
-```
-Update task_plan.md to mark this phase complete.
-Update progress.md with what was done.
-```
-
-### 4. Verify completion manually
-
-Before finishing:
-```
-Check task_plan.md - are all phases marked complete?
-```
+| Plugin | `~/.adal/plugin-cache/` | External skills from GitHub (lowest priority) |
 
 ---
 
 ## Using /skills Command
 
-In AdaL, you can view all active skills with:
+In AdaL, view all active skills with:
 
 ```
 /skills
 ```
 
-This shows skills from all sources (personal, project, plugins).
+This shows skills from all sources (personal, project, plugins):
+
+```
+> Skills (Page 1/1)
+
+Personal (~/.adal/skills/):
+  planning-with-files
+
+Project (.adal/skills/):
+  (none)
+
+Plugins:
+  (none)
+```
+
+---
+
+## Using /plugin Commands
+
+Manage external skills from GitHub:
+
+| Command | Description |
+|---------|-------------|
+| `/plugin marketplace add <owner/repo>` | Add a marketplace (one-time setup) |
+| `/plugin` | Browse available plugins and marketplaces |
+| `/plugin install <plugin>@<marketplace>` | Install a plugin |
+| `/plugin uninstall <plugin>@<marketplace>` | Uninstall a plugin |
+| `/plugin marketplace remove <name>` | Remove a marketplace |
 
 ---
 
@@ -157,34 +142,45 @@ Copy them to your project root when starting a new task.
 
 ## Scripts
 
-Helper scripts for manual execution:
+Helper scripts for manual execution (AdaL executes scripts via bash):
 
 ```bash
 # Initialize planning files
-./~/.adal/skills/planning-with-files/scripts/init-session.sh
+bash ~/.adal/skills/planning-with-files/scripts/init-session.sh
 
 # Check task completion
-./~/.adal/skills/planning-with-files/scripts/check-complete.sh
+bash ~/.adal/skills/planning-with-files/scripts/check-complete.sh
 
 # Session recovery
 python ~/.adal/skills/planning-with-files/scripts/session-catchup.py $(pwd)
+```
+
+Windows PowerShell:
+```powershell
+# Initialize planning files
+powershell -File "$env:USERPROFILE\.adal\skills\planning-with-files\scripts\init-session.ps1"
+
+# Check task completion
+powershell -File "$env:USERPROFILE\.adal\skills\planning-with-files\scripts\check-complete.ps1"
 ```
 
 ---
 
 ## Tips for AdaL Users
 
-1. **Pin planning files:** Keep task_plan.md open in a split view for easy reference.
+1. **Use /skills command:** Verify planning-with-files is active after installation.
 
-2. **Use /skills command:** View all installed skills and verify planning-with-files is active.
-
-3. **Use explicit prompts:** Be explicit when starting complex tasks:
+2. **Use explicit prompts:** Be explicit when starting complex tasks:
    ```
    This is a complex task. Let's use the planning-with-files pattern.
    Start by creating task_plan.md with the goal and phases.
    ```
 
-4. **Check status regularly:** Manually verify completion before finishing.
+3. **Pin planning files:** Keep task_plan.md open for easy reference.
+
+4. **Re-read plan before decisions:** Periodically ask AdaL to read task_plan.md to refresh goals.
+
+5. **Check status regularly:** Verify all phases are complete before finishing.
 
 ---
 

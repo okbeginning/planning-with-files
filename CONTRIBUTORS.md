@@ -52,6 +52,13 @@ These amazing people have contributed code, documentation, or significant improv
   - Created `docs/continue.md` installation guide
   - **Impact:** Expands IDE support to Continue.dev ecosystem
 
+- **[@ZWkang](https://github.com/ZWkang)** - [PR #60](https://github.com/OthmanAdi/planning-with-files/pull/60)
+  - Added CodeBuddy IDE integration (Tencent Cloud AI coding assistant)
+  - Created `.codebuddy/skills/` folder with full skill structure
+  - Added templates, scripts, and references for CodeBuddy
+  - Created `docs/codebuddy.md` installation guide
+  - **Impact:** Expands IDE support to CodeBuddy ecosystem
+
 ### Other Contributors
 
 - **[@tobrun](https://github.com/tobrun)** - [PR #3](https://github.com/OthmanAdi/planning-with-files/pull/3)
@@ -105,6 +112,6 @@ If you've contributed and don't see your name here, please open an issue! We wan
 
 ---
 
-**Total Contributors:** 10+ and growing!
+**Total Contributors:** 11+ and growing!
 
-*Last updated: January 26, 2026*
+*Last updated: January 27, 2026*

@@ -1,91 +1,11 @@
 ---
 name: planning-with-files
-version: "2.12.0"
-description: Implements Manus-style file-based planning for complex tasks. Creates task_plan.md, findings.md, and progress.md. Use when starting complex multi-step tasks, research projects, or any task requiring >5 tool calls. Now with automatic session recovery after /clear.
-user-invocable: true
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Glob
-  - Grep
-  - WebFetch
-  - WebSearch
-hooks:
-  PreToolUse:
-    - matcher: "Write|Edit|Bash|Read|Glob|Grep"
-      hooks:
-        - type: command
-          command: "cat task_plan.md 2>/dev/null | head -30 || true"
-  PostToolUse:
-    - matcher: "Write|Edit"
-      hooks:
-        - type: command
-          command: "echo '[planning-with-files] File updated. If this completes a phase, update task_plan.md status.'"
-  Stop:
-    - hooks:
-        - type: command
-          command: |
-            SCRIPT_DIR="${ADAL_SKILL_ROOT:-$HOME/.adal/skills/planning-with-files}/scripts"
-
-            IS_WINDOWS=0
-            if [ "${OS-}" = "Windows_NT" ]; then
-              IS_WINDOWS=1
-            else
-              UNAME_S="$(uname -s 2>/dev/null || echo '')"
-              case "$UNAME_S" in
-                CYGWIN*|MINGW*|MSYS*) IS_WINDOWS=1 ;;
-              esac
-            fi
-
-            if [ "$IS_WINDOWS" -eq 1 ]; then
-              if command -v pwsh >/dev/null 2>&1; then
-                pwsh -ExecutionPolicy Bypass -File "$SCRIPT_DIR/check-complete.ps1" 2>/dev/null ||
-                powershell -ExecutionPolicy Bypass -File "$SCRIPT_DIR/check-complete.ps1" 2>/dev/null ||
-                sh "$SCRIPT_DIR/check-complete.sh"
-              else
-                powershell -ExecutionPolicy Bypass -File "$SCRIPT_DIR/check-complete.ps1" 2>/dev/null ||
-                sh "$SCRIPT_DIR/check-complete.sh"
-              fi
-            else
-              sh "$SCRIPT_DIR/check-complete.sh"
-            fi
+description: Implements Manus-style file-based planning for complex tasks. Creates task_plan.md, findings.md, and progress.md. Use when starting complex multi-step tasks, research projects, or any task requiring >5 tool calls.
 ---
 
 # Planning with Files
 
 Work like Manus: Use persistent markdown files as your "working memory on disk."
-
-## FIRST: Check for Previous Session (v2.2.0)
-
-**Before starting work**, check for unsynced context from a previous session:
-
-```bash
-# Linux/macOS (auto-detects python3 or python)
-$(command -v python3 || command -v python) ${ADAL_SKILL_ROOT}/scripts/session-catchup.py "$(pwd)"
-```
-
-```powershell
-# Windows PowerShell
-python "$env:USERPROFILE\.adal\skills\planning-with-files\scripts\session-catchup.py" (Get-Location)
-```
-
-If catchup report shows unsynced context:
-1. Run `git diff --stat` to see actual code changes
-2. Read current planning files
-3. Update planning files based on catchup + git diff
-4. Then proceed with task
-
-## Important: Where Files Go
-
-- **Templates** are in `${ADAL_SKILL_ROOT}/templates/`
-- **Your planning files** go in **your project directory**
-
-| Location | What Goes There |
-|----------|-----------------|
-| Skill directory (`${ADAL_SKILL_ROOT}/`) | Templates, scripts, reference docs |
-| Your project directory | `task_plan.md`, `findings.md`, `progress.md` |
 
 ## Quick Start
 
@@ -224,11 +144,18 @@ Copy these templates to start:
 
 ## Scripts
 
-Helper scripts for automation:
+Helper scripts for automation (execute via bash):
 
 - `scripts/init-session.sh` — Initialize all planning files
 - `scripts/check-complete.sh` — Verify all phases complete
-- `scripts/session-catchup.py` — Recover context from previous session (v2.2.0)
+- `scripts/session-catchup.py` — Recover context from previous session
+
+To use scripts:
+```bash
+bash scripts/init-session.sh
+bash scripts/check-complete.sh
+python scripts/session-catchup.py $(pwd)
+```
 
 ## Advanced Topics
 
