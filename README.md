@@ -63,7 +63,7 @@ See [docs/installation.md](docs/installation.md) for all installation methods.
 | Gemini CLI | ✅ Full Support | [Gemini Setup](docs/gemini.md) | Agent Skills |
 | OpenClaw | ✅ Full Support | [OpenClaw Setup](docs/openclaw.md) | Workspace/Local Skills |
 | Kiro | ✅ Full Support | [Kiro Setup](docs/kiro.md) | Steering Files |
-| Cursor | ✅ Full Support | [Cursor Setup](docs/cursor.md) | Skills |
+| Cursor | ✅ Full Support | [Cursor Setup](docs/cursor.md) | Skills + Hooks |
 | Continue | ✅ Full Support | [Continue Setup](docs/continue.md) | Skills + Prompt files |
 | Kilocode | ✅ Full Support | [Kilocode Setup](docs/kilocode.md) | Skills |
 | OpenCode | ✅ Full Support | [OpenCode Setup](docs/opencode.md) | Personal/Project Skill |
@@ -268,7 +268,9 @@ planning-with-files/
 ├── .opencode/               # OpenCode IDE skills
 │   └── skills/
 ├── .claude-plugin/          # Plugin manifest
-├── .cursor/                 # Cursor skills
+├── .cursor/                 # Cursor skills + hooks
+│   ├── hooks.json           # Hook configuration
+│   ├── hooks/               # Hook scripts (bash + PowerShell)
 │   └── skills/
 ├── .kilocode/               # Kilo Code skills
 │   └── skills/
