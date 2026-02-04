@@ -1,18 +1,18 @@
-# Moltbot Setup
+# OpenClaw Setup
 
-How to use planning-with-files with [Moltbot](https://molt.bot).
+How to use planning-with-files with [OpenClaw](https://openclaw.ai).
 
 ---
 
 ## What This Integration Adds
 
-- Workspace skill: `.moltbot/skills/planning-with-files/`
+- Workspace skill: `.openclaw/skills/planning-with-files/`
 - Full templates, scripts, and reference documentation
 - Cross-platform support (macOS, Linux, Windows)
 
-Moltbot supports three skill locations (in precedence order):
+OpenClaw supports three skill locations (in precedence order):
 1. **Workspace skills** (highest priority): `<workspace>/skills/`
-2. **Managed/local skills**: `~/.clawdbot/skills/`
+2. **Managed/local skills**: `~/.openclaw/skills/`
 3. **Bundled skills** (lowest priority): shipped with install
 
 ---
@@ -25,8 +25,8 @@ Copy the skill to your project:
 # Clone the repo
 git clone https://github.com/OthmanAdi/planning-with-files.git
 
-# Copy the Moltbot skill to your workspace
-cp -r planning-with-files/.moltbot/skills/planning-with-files skills/
+# Copy the OpenClaw skill to your workspace
+cp -r planning-with-files/.openclaw/skills/planning-with-files skills/
 
 # Clean up
 rm -rf planning-with-files
@@ -36,15 +36,15 @@ rm -rf planning-with-files
 
 ## Installation (Global)
 
-Install to your local Moltbot skills directory:
+Install to your local OpenClaw skills directory:
 
 ```bash
 # Clone the repo
 git clone https://github.com/OthmanAdi/planning-with-files.git
 
-# Copy to global Moltbot skills
-mkdir -p ~/.clawdbot/skills
-cp -r planning-with-files/.moltbot/skills/planning-with-files ~/.clawdbot/skills/
+# Copy to global OpenClaw skills
+mkdir -p ~/.openclaw/skills
+cp -r planning-with-files/.openclaw/skills/planning-with-files ~/.openclaw/skills/
 
 # Clean up
 rm -rf planning-with-files
@@ -55,18 +55,15 @@ rm -rf planning-with-files
 ## Verify Installation
 
 ```bash
-# List all skills
-moltbot skills list
-
-# Check if planning-with-files is loaded
-moltbot skills info planning-with-files
+# Check OpenClaw status and loaded skills
+openclaw status
 ```
 
 ---
 
 ## Usage
 
-1. Start a Moltbot session in your project directory
+1. Start an OpenClaw session in your project directory
 2. For complex tasks, the skill will guide you to create:
    - `task_plan.md` — Phase tracking and decisions
    - `findings.md` — Research and discoveries
@@ -94,7 +91,7 @@ bash skills/planning-with-files/scripts/check-complete.sh
 
 ## Configuration (Optional)
 
-Configure the skill in `~/.clawdbot/moltbot.json`:
+Configure the skill in `~/.openclaw/openclaw.json`:
 
 ```json5
 {
@@ -112,7 +109,7 @@ Configure the skill in `~/.clawdbot/moltbot.json`:
 
 ## Notes
 
-- Moltbot snapshots eligible skills when a session starts
+- OpenClaw snapshots eligible skills when a session starts
 - Workspace skills take precedence over bundled skills
 - The skill works on all platforms: macOS, Linux, and Windows
 - Planning files are tool-agnostic and work across Claude Code, Cursor, and other IDEs
