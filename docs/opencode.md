@@ -42,14 +42,44 @@ cat ~/.config/opencode/skills/planning-with-files/planning-with-files/SKILL.md
 
 ## oh-my-opencode Compatibility
 
-If using oh-my-opencode, ensure planning-with-files is not in the `disabled_skills` array:
+oh-my-opencode has Claude Code compatibility for skills. To use planning-with-files with oh-my-opencode:
 
-**~/.config/opencode/oh-my-opencode.json:**
+### Step 1: Install the skill
+
+```bash
+mkdir -p ~/.config/opencode/skills/planning-with-files
+cp -r .opencode/skills/planning-with-files/* ~/.config/opencode/skills/planning-with-files/
+```
+
+### Step 2: Configure oh-my-opencode
+
+Add the skill to your `~/.config/opencode/oh-my-opencode.json` (or `.opencode/oh-my-opencode.json` for project-level):
+
 ```json
 {
+  "skills": {
+    "sources": [
+      { "path": "~/.config/opencode/skills/planning-with-files", "recursive": false }
+    ],
+    "enable": ["planning-with-files"]
+  },
   "disabled_skills": []
 }
 ```
+
+### Step 3: Verify loading
+
+Ask the agent: "Do you have access to the planning-with-files skill? Can you create task_plan.md?"
+
+### Troubleshooting
+
+If the agent forgets the planning rules:
+
+1. **Check skill is loaded**: The skill should appear in oh-my-opencode's recognized skills
+2. **Explicit invocation**: Tell the agent "Use the planning-with-files skill for this task"
+3. **Check for conflicts**: If using superpowers plugin alongside oh-my-opencode, choose one method:
+   - Use oh-my-opencode's native skill loading (recommended)
+   - OR use superpowers' `use_skill` tool, but not both
 
 ## Verification
 
