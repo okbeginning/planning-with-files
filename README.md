@@ -67,7 +67,7 @@ When your context fills up and you run `/clear`, this skill **automatically reco
 </details>
 
 <details>
-<summary><strong>🛠️ Supported IDEs (14 Platforms)</strong></summary>
+<summary><strong>🛠️ Supported IDEs (15 Platforms)</strong></summary>
 
 | IDE | Status | Installation Guide | Format |
 |-----|--------|-------------------|--------|
@@ -85,6 +85,7 @@ When your context fills up and you run `/clear`, this skill **automatically reco
 | CodeBuddy | ✅ Full Support | [CodeBuddy Setup](docs/codebuddy.md) | Workspace/Personal Skill |
 | AdaL CLI (Sylph AI) | ✅ Full Support | [AdaL Setup](docs/adal.md) | Personal/Project Skills |
 | Pi Agent | ✅ Full Support | [Pi Agent Setup](docs/pi-agent.md) | Agent Skills |
+| GitHub Copilot | ✅ Full Support | [Copilot Setup](docs/copilot.md) | Hooks |
 
 > **Note:** If your IDE uses the legacy Rules system instead of Skills, see the [`legacy-rules-support`](https://github.com/OthmanAdi/planning-with-files/tree/legacy-rules-support) branch.
 
@@ -104,6 +105,7 @@ A Claude Code plugin that transforms your workflow to use persistent markdown fi
 [![Kiro](https://img.shields.io/badge/Kiro-Steering-00D4AA)](https://kiro.dev/docs/cli/steering/)
 [![AdaL CLI](https://img.shields.io/badge/AdaL%20CLI-Skills-9B59B6)](https://docs.sylph.ai/features/plugins-and-skills)
 [![Pi Agent](https://img.shields.io/badge/Pi%20Agent-Skills-FF4081)](https://pi.dev)
+[![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-Hooks-000000)](https://docs.github.com/en/copilot/reference/hooks-configuration)
 [![Version](https://img.shields.io/badge/version-2.15.1-brightgreen)](https://github.com/OthmanAdi/planning-with-files/releases)
 [![SkillCheck Validated](https://img.shields.io/badge/SkillCheck-Validated-4c1)](https://getskillcheck.com)
 
@@ -278,6 +280,10 @@ planning-with-files/
 ├── .pi/                     # Pi Agent skills
 │   └── skills/
 │       └── planning-with-files/
+├── .github/                 # GitHub Copilot hooks
+│   └── hooks/
+│       ├── planning-with-files.json  # Hook configuration
+│       └── scripts/         # Hook scripts (bash + PowerShell)
 ├── CHANGELOG.md
 ├── LICENSE
 └── README.md
@@ -305,6 +311,7 @@ planning-with-files/
 | [CodeBuddy Setup](docs/codebuddy.md) | CodeBuddy IDE integration guide |
 | [AdaL CLI Setup](docs/adal.md) | AdaL CLI / Sylph AI integration guide |
 | [Pi Agent Setup](docs/pi-agent.md) | Pi Agent integration guide |
+| [Copilot Setup](docs/copilot.md) | GitHub Copilot hooks integration guide |
 
 ## Contributors
 
