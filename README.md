@@ -394,4 +394,4 @@ MIT License — feel free to use, modify, and distribute.
 
 ## Star History
 
-[![RepoStars](https://repostars.dev/api/embed?repo=OthmanAdi%2Fplanning-with-files&theme=copper)](https://repostars.dev/?repos=OthmanAdi%2Fplanning-with-files&theme=copper)
+<a href="https://repostars.dev/?repos=OthmanAdi%2Fplanning-with-files&theme=copper"><img src="https://repostars.dev/api/embed?repo=OthmanAdi%2Fplanning-with-files&theme=copper" width="100%" alt="Star History Chart" /></a>
