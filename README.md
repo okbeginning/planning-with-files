@@ -62,6 +62,7 @@ Everyone who made this project better — bug reports, PRs, and integrations.
 
 | Version | Highlights |
 |---------|------------|
+| **v2.18.0** | BoxLite sandbox runtime integration |
 | **v2.17.0** | Mastra Code support + all IDE SKILL.md spec fixes |
 | **v2.16.1** | Copilot garbled characters fix — PS1 UTF-8 encoding + bash ensure_ascii (thanks @Hexiaopi!) |
 | **v2.16.0** | GitHub Copilot hooks support (thanks @lincolnwan!) |
@@ -122,6 +123,17 @@ When your context fills up and you run `/clear`, this skill **automatically reco
 
 </details>
 
+<details>
+<summary><strong>🧱 Sandbox Runtimes (1 Platform)</strong></summary>
+
+| Runtime | Status | Guide | Notes |
+|---------|--------|-------|-------|
+| BoxLite | ✅ Documented | [BoxLite Setup](docs/boxlite.md) | Run Claude Code + planning-with-files inside hardware-isolated micro-VMs |
+
+> **Note:** BoxLite is a sandbox runtime, not an IDE. Skills load via [ClaudeBox](https://github.com/boxlite-ai/claudebox) — BoxLite’s official Claude Code integration layer.
+
+</details>
+
 ---
 
 A Claude Code plugin that transforms your workflow to use persistent markdown files for planning, progress tracking, and knowledge storage — the exact pattern that made Manus worth billions.
@@ -138,7 +150,8 @@ A Claude Code plugin that transforms your workflow to use persistent markdown fi
 [![Pi Agent](https://img.shields.io/badge/Pi%20Agent-Skills-FF4081)](https://pi.dev)
 [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-Hooks-000000)](https://docs.github.com/en/copilot/reference/hooks-configuration)
 [![Mastra Code](https://img.shields.io/badge/Mastra%20Code-Skills-00BCD4)](https://code.mastra.ai)
-[![Version](https://img.shields.io/badge/version-2.17.0-brightgreen)](https://github.com/OthmanAdi/planning-with-files/releases)
+[![BoxLite](https://img.shields.io/badge/BoxLite-Sandbox-6C3483)](https://boxlite.ai)
+[![Version](https://img.shields.io/badge/version-2.18.0-brightgreen)](https://github.com/OthmanAdi/planning-with-files/releases)
 [![SkillCheck Validated](https://img.shields.io/badge/SkillCheck-Validated-4c1)](https://getskillcheck.com)
 
 ## Quick Install
@@ -276,7 +289,12 @@ planning-with-files/
 │   ├── kilocode.md
 │   ├── codex.md
 │   ├── opencode.md
-│   └── mastra.md             # Mastra Code setup
+│   ├── mastra.md             # Mastra Code setup
+│   └── boxlite.md            # BoxLite sandbox setup
+├── examples/                # Integration examples
+│   └── boxlite/             # BoxLite quickstart
+│       ├── README.md
+│       └── quickstart.py
 ├── planning-with-files/     # Plugin skill folder
 │   ├── SKILL.md
 │   ├── templates/
@@ -348,6 +366,7 @@ planning-with-files/
 | [Pi Agent Setup](docs/pi-agent.md) | Pi Agent integration guide |
 | [Copilot Setup](docs/copilot.md) | GitHub Copilot hooks integration guide |
 | [Mastra Setup](docs/mastra.md) | Mastra Code integration guide |
+| [BoxLite Setup](docs/boxlite.md) | BoxLite micro-VM sandbox integration guide |
 
 
 ## Acknowledgments

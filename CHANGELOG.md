@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.18.0] - 2026-02-26
+
+### Added
+
+- **BoxLite sandbox runtime integration** (Issue #84 by @DorianZheng)
+  - New `docs/boxlite.md` guide for running planning-with-files inside BoxLite micro-VM sandboxes via ClaudeBox
+  - New `examples/boxlite/quickstart.py` — working Python example using ClaudeBox's Skill API to inject planning-with-files into a VM
+  - New `examples/boxlite/README.md` — example context and requirements
+  - README: new "Sandbox Runtimes" section (BoxLite is infrastructure, not an IDE — kept separate from the 16-platform IDE table)
+  - README: BoxLite badge and Documentation table entry added
+  - BoxLite loads via ClaudeBox (`pip install claudebox`) using its Python Skill object — no `.boxlite/` folder needed
+
+### Thanks
+
+- @DorianZheng for the BoxLite integration proposal (Issue #84)
+
+---
+
 ## [2.17.0] - 2026-02-25
 
 ### Added

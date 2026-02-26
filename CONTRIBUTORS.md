@@ -92,6 +92,7 @@ These developers have created forks that extend the functionality:
 
 Thank you to everyone who reported issues, provided feedback, and helped test fixes:
 
+- [@DorianZheng](https://github.com/DorianZheng) - Issue #84 (BoxLite sandbox integration proposal)
 - [@mtuwei](https://github.com/mtuwei) - Issue #32 (Windows hook error)
 - [@JianweiWangs](https://github.com/JianweiWangs) - Issue #31 (Skill activation)
 - [@tingles2233](https://github.com/tingles2233) - Issue #29 (Plugin update issues)
@@ -118,6 +119,6 @@ If you've contributed and don't see your name here, please open an issue! We wan
 
 ---
 
-**Total Contributors:** 12+ and growing!
+**Total Contributors:** 13+ and growing!
 
-*Last updated: February 21, 2026*
+*Last updated: February 26, 2026*
