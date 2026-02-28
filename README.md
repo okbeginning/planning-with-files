@@ -326,29 +326,7 @@ planning-with-files/
 
 ## Documentation
 
-| Document | Description |
-|----------|-------------|
-| [Installation Guide](docs/installation.md) | All installation methods (plugin, manual, Cursor, Windows) |
-| [Quick Start](docs/quickstart.md) | 5-step guide to using the pattern |
-| [Workflow Diagram](docs/workflow.md) | Visual diagram of how files and hooks interact |
-| [Troubleshooting](docs/troubleshooting.md) | Common issues and solutions |
-| [Gemini CLI Setup](docs/gemini.md) | Google Gemini CLI integration guide |
-| [OpenClaw Setup](docs/openclaw.md) | OpenClaw integration guide |
-| [Kiro Setup](docs/kiro.md) | Kiro steering files integration |
-| [Cursor Setup](docs/cursor.md) | Cursor IDE-specific instructions |
-| [Continue Setup](docs/continue.md) | Continue integration guide (skills + slash prompt) |
-| [Windows Setup](docs/windows.md) | Windows-specific notes |
-| [Kilo Code Support](docs/kilocode.md) | Kilo Code integration guide |
-| [Codex Setup](docs/codex.md) | Codex IDE installation and usage |
-| [OpenCode Setup](docs/opencode.md) | OpenCode IDE installation, oh-my-opencode config |
-| [FactoryAI Droid Setup](docs/factory.md) | FactoryAI Droid integration guide |
-| [Antigravity Setup](docs/antigravity.md) | Antigravity IDE integration guide |
-| [CodeBuddy Setup](docs/codebuddy.md) | CodeBuddy IDE integration guide |
-| [AdaL CLI Setup](docs/adal.md) | AdaL CLI / Sylph AI integration guide |
-| [Pi Agent Setup](docs/pi-agent.md) | Pi Agent integration guide |
-| [Copilot Setup](docs/copilot.md) | GitHub Copilot hooks integration guide |
-| [Mastra Setup](docs/mastra.md) | Mastra Code integration guide |
-| [BoxLite Setup](docs/boxlite.md) | BoxLite micro-VM sandbox integration guide |
+All platform setup guides and documentation are in the [docs/](./docs/) folder.
 
 
 ## Acknowledgments
