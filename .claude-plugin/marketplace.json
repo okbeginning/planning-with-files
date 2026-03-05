@@ -9,7 +9,7 @@
       "name": "planning-with-files",
       "source": "./",
       "description": "Manus-style persistent markdown files for planning, progress tracking, and knowledge storage. Now with hooks integration.",
-      "version": "2.0.0"
+      "version": "2.21.0"
     }
   ]
 }
