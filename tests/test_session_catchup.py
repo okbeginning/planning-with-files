@@ -161,6 +161,29 @@ class SessionCatchupCodexTests(unittest.TestCase):
             self.module.find_last_planning_update(messages),
         )
 
+    def test_messages_without_line_numbers_are_ignored(self):
+        messages = [
+            {
+                "type": "event_msg",
+                "payload": {
+                    "type": "patch_apply_end",
+                    "success": True,
+                    "changes": {"progress.md": {"operation": "modified"}},
+                },
+            },
+            {
+                "type": "response_item",
+                "payload": {
+                    "type": "message",
+                    "role": "assistant",
+                    "content": [{"type": "output_text", "text": "ignored"}],
+                },
+            },
+        ]
+
+        self.assertEqual((-1, None), self.module.find_last_planning_update(messages))
+        self.assertEqual([], self.module.extract_messages_after(messages, -1))
+
     def test_codex_main_prints_catchup_from_matching_session(self):
         for filename in self.module.PLANNING_FILES:
             (self.project_dir / filename).write_text("# test\n", encoding="utf-8")

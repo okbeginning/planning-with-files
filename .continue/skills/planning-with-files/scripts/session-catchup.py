@@ -220,6 +220,9 @@ def find_last_planning_update(messages: List[Dict[str, Any]]) -> Tuple[int, Opti
     last_update_file = None
 
     for msg in messages:
+        line_num = msg.get('_line_num')
+        if not isinstance(line_num, int):
+            continue
         msg_type = msg.get('type')
 
         if msg_type == 'assistant':
@@ -235,7 +238,7 @@ def find_last_planning_update(messages: List[Dict[str, Any]]) -> Tuple[int, Opti
                         if tool_name in ('Write', 'Edit'):
                             planning_file = planning_file_from_path(tool_input.get('file_path', ''))
                             if planning_file:
-                                last_update_line = msg['_line_num']
+                                last_update_line = line_num
                                 last_update_file = planning_file
 
         elif msg_type == 'event_msg':
@@ -243,7 +246,7 @@ def find_last_planning_update(messages: List[Dict[str, Any]]) -> Tuple[int, Opti
             if isinstance(payload, dict):
                 planning_file = codex_planning_update(payload)
                 if planning_file:
-                    last_update_line = msg['_line_num']
+                    last_update_line = line_num
                     last_update_file = planning_file
 
     return last_update_line, last_update_file
@@ -278,14 +281,15 @@ def summarize_codex_tool(payload: Dict[str, Any]) -> str:
         command = tool_args.get('cmd', raw_args)
         if isinstance(command, str):
             return f"exec_command: {command[:80]}"
-    return 'apply_patch' if tool_name == 'apply_patch' else str(tool_name)
+    return str(tool_name)
 
 
 def extract_messages_after(messages: List[Dict[str, Any]], after_line: int) -> List[Dict[str, Any]]:
     """Extract conversation messages after a certain line number."""
     result = []
     for msg in messages:
-        if msg['_line_num'] <= after_line:
+        line_num = msg.get('_line_num')
+        if not isinstance(line_num, int) or line_num <= after_line:
             continue
 
         msg_type = msg.get('type')
@@ -298,7 +302,7 @@ def extract_messages_after(messages: List[Dict[str, Any]], after_line: int) -> L
                 if content.startswith(('<local-command', '<command-', '<task-notification')):
                     continue
                 if len(content) > 20:
-                    result.append({'role': 'user', 'content': content, 'line': msg['_line_num']})
+                    result.append({'role': 'user', 'content': content, 'line': line_num})
 
         elif msg_type == 'assistant':
             msg_content = msg.get('message', {}).get('content', '')
@@ -327,7 +331,7 @@ def extract_messages_after(messages: List[Dict[str, Any]], after_line: int) -> L
                     'role': 'assistant',
                     'content': text[:600] if text else '',
                     'tools': tool_uses,
-                    'line': msg['_line_num']
+                    'line': line_num
                 })
 
         elif msg_type == 'response_item':
@@ -345,20 +349,20 @@ def extract_messages_after(messages: List[Dict[str, Any]], after_line: int) -> L
                     if content.startswith(('<local-command', '<command-', '<task-notification')):
                         continue
                     if len(content) > 20:
-                        result.append({'role': 'user', 'content': content, 'line': msg['_line_num']})
+                        result.append({'role': 'user', 'content': content, 'line': line_num})
                 elif content:
                     result.append({
                         'role': 'assistant',
                         'content': content[:600],
                         'tools': [],
-                        'line': msg['_line_num']
+                        'line': line_num
                     })
             elif payload_type in ('function_call', 'custom_tool_call'):
                 result.append({
                     'role': 'assistant',
                     'content': '',
                     'tools': [summarize_codex_tool(payload)],
-                    'line': msg['_line_num']
+                    'line': line_num
                 })
 
     return result
