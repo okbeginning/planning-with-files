@@ -188,6 +188,10 @@ These amazing people have contributed code, documentation, or significant improv
   - Fixed Codex session-catchup silently scanning Claude session paths; now prints an explicit fallback message when running from Codex context (PR #100)
   - **Impact:** Significant docs and tooling consistency sweep across the entire multi-IDE surface
 
+- **[@Emin017](https://github.com/Emin017)** (Qiming Chu) - [PR #145](https://github.com/OthmanAdi/planning-with-files/pull/145)
+  - Changed shebangs from `/bin/bash` to `/usr/bin/env bash` across hook scripts
+  - Fixes compatibility on systems like NixOS where bash is not at `/bin/bash`
+
 ## Community Forks
 
 These developers have created forks that extend the functionality:
@@ -232,6 +236,6 @@ If you've contributed and don't see your name here, please open an issue! We wan
 
 ---
 
-**Total Contributors:** 36+ and growing!
+**Total Contributors:** 37+ and growing!
 
-*Last updated: April 21, 2026*
+*Last updated: April 29, 2026*
