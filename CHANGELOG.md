@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.36.3] - 2026-05-01
+
+### Fixed
+
+- **Missing parallel planning scripts in canonical skill copy**: `resolve-plan-dir.sh`, `resolve-plan-dir.ps1`, `set-active-plan.sh`, and `set-active-plan.ps1` were added to `scripts/` in v2.36.0 but never propagated to `skills/planning-with-files/scripts/` or the IDE mirror folders. Users installing via `npx skills add` could not use the v2.36.0 parallel planning workflow because the key scripts were not shipped in the install. Same class of gap as PR #149.
+- **`sync-ide-folders.py` manifest incomplete**: the sync manifest only listed the original five scripts and did not include the four new v2.36.0 scripts. Running the sync tool after this release propagates all nine user-facing scripts to all IDE mirrors.
+- **`test_canonical_script_sync.py` did not cover new scripts**: the SHARED_SCRIPTS tuple in the regression test from PR #149 only listed the original four scripts. Updated to include all eight user-facing scripts that must stay in sync between `scripts/` and `skills/planning-with-files/scripts/`.
+
+### Added
+
+- **Parallel planning documentation in SKILL.md**: the Scripts section now documents `resolve-plan-dir.sh` and `set-active-plan.sh` with usage descriptions and a parallel task workflow example showing how to use slug mode, `set-active-plan.sh`, and `export PLAN_ID` together.
+
+### Changed
+
+- Version bumped to 2.36.3 across 14 SKILL.md variants, `plugin.json`, `marketplace.json`, and `CITATION.cff`
+
 ## [2.36.2] - 2026-05-01
 
 ### Fixed

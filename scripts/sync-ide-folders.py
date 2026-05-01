@@ -46,6 +46,10 @@ SCRIPTS = [
     "scripts/init-session.sh",
     "scripts/init-session.ps1",
     "scripts/session-catchup.py",
+    "scripts/resolve-plan-dir.sh",
+    "scripts/resolve-plan-dir.ps1",
+    "scripts/set-active-plan.sh",
+    "scripts/set-active-plan.ps1",
 ]
 
 # ─── IDE sync manifests ───────────────────────────────────────────
