@@ -1,10 +1,48 @@
 # Check if all phases in task_plan.md are complete
-# Always exits 0 -- uses stdout for status reporting
-# Used by Stop hook to report task completion status
+# Default invocation: advisory echo, always exits 0 (Stop hook status report).
+# With -Gate: deliberate completion gate, opt-in per plan via <plan-dir>/.mode.
+# Used by Stop hook to report task completion status.
+#
+# Gate mode (v3, -Gate flag) blocks ONLY when ALL hold (design "Gate decision table"):
+#   1. <plan-dir>/.mode exists and contains "gate" (explicit opt-in)
+#   2. an in_progress phase exists (not merely complete<total)
+#   3. the Stop hook input JSON on stdin does not set stop_hook_active=true
+#   4. the block counter (<plan-dir>/.stop_blocks) is below cap (PWF_GATE_CAP, default 20)
+#   5. the ledger advanced since the last block (stall -> allow stop)
+# When all hold, emits a single-line block-decision JSON on stdout and exits 0.
+# Otherwise advisory output and exit 0. Without -Gate, byte-equivalent to v2.43.
+#
+# Stdin: read only when input is redirected ([Console]::IsInputRedirected), so an
+# interactive console never blocks. Hook-piped JSON is EOF-terminated.
 
 param(
-    [string]$PlanFile = "task_plan.md"
+    [string]$PlanFile = "",
+    [switch]$Gate
 )
+
+if ($PlanFile -ne "") {
+    $PlanDir = Split-Path -Parent $PlanFile
+    if ($PlanDir -eq "") { $PlanDir = "." }
+} else {
+    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    $resolver = Join-Path $scriptDir "resolve-plan-dir.ps1"
+    $resolvedDir = ""
+    if (Test-Path $resolver) {
+        try {
+            $resolvedDir = (& $resolver 2>$null | Select-Object -First 1)
+            if ($null -eq $resolvedDir) { $resolvedDir = "" }
+        } catch {
+            $resolvedDir = ""
+        }
+    }
+    if ($resolvedDir -ne "" -and (Test-Path (Join-Path $resolvedDir "task_plan.md"))) {
+        $PlanFile = Join-Path $resolvedDir "task_plan.md"
+        $PlanDir = $resolvedDir
+    } else {
+        $PlanFile = "task_plan.md"
+        $PlanDir = "."
+    }
+}
 
 if (-not (Test-Path $PlanFile)) {
     Write-Host '[planning-with-files] No task_plan.md found -- no active planning session.'
@@ -29,16 +67,139 @@ if ($COMPLETE -eq 0 -and $IN_PROGRESS -eq 0 -and $PENDING -eq 0) {
     $PENDING = ([regex]::Matches($content, "\[pending\]")).Count
 }
 
-# Report status -- always exit 0, incomplete task is a normal state
-if ($COMPLETE -eq $TOTAL -and $TOTAL -gt 0) {
-    Write-Host ('[planning-with-files] ALL PHASES COMPLETE (' + $COMPLETE + '/' + $TOTAL + '). If the user has additional work, add new phases to task_plan.md before starting.')
-} else {
-    Write-Host ('[planning-with-files] Task in progress (' + $COMPLETE + '/' + $TOTAL + ' phases complete). Update progress.md before stopping.')
-    if ($IN_PROGRESS -gt 0) {
-        Write-Host ('[planning-with-files] ' + $IN_PROGRESS + ' phase(s) still in progress.')
-    }
-    if ($PENDING -gt 0) {
-        Write-Host ('[planning-with-files] ' + $PENDING + ' phase(s) pending.')
+# advisory_report: the v2.43 status echo.
+function Write-AdvisoryReport {
+    if ($COMPLETE -eq $TOTAL -and $TOTAL -gt 0) {
+        Write-Host ('[planning-with-files] ALL PHASES COMPLETE (' + $COMPLETE + '/' + $TOTAL + '). If the user has additional work, add new phases to task_plan.md before starting.')
+    } else {
+        Write-Host ('[planning-with-files] Task in progress (' + $COMPLETE + '/' + $TOTAL + ' phases complete). Update progress.md before stopping.')
+        if ($IN_PROGRESS -gt 0) {
+            Write-Host ('[planning-with-files] ' + $IN_PROGRESS + ' phase(s) still in progress.')
+        }
+        if ($PENDING -gt 0) {
+            Write-Host ('[planning-with-files] ' + $PENDING + ' phase(s) pending.')
+        }
     }
 }
+
+# ---- Default (advisory) path: byte-equivalent to v2.43 ----
+if (-not $Gate) {
+    Write-AdvisoryReport
+    exit 0
+}
+
+# ---- Gate path (-Gate). Resolves to advisory unless every guard says block. ----
+
+# Guard 1: gated mode. The .mode file must contain "gate".
+$modeFile = Join-Path $PlanDir ".mode"
+$gatedMode = $false
+if (Test-Path $modeFile) {
+    $modeContent = Get-Content $modeFile -Raw -ErrorAction SilentlyContinue
+    if ($null -ne $modeContent -and $modeContent -match "gate") {
+        $gatedMode = $true
+    }
+}
+if (-not $gatedMode) {
+    Write-AdvisoryReport
+    exit 0
+}
+
+# Guard 3: stop_hook_active. Read stdin only when input is redirected, so an
+# interactive console never blocks. A true value means we are already inside a
+# forced continuation; allow the stop.
+$stdinJson = ""
+try {
+    if ([Console]::IsInputRedirected) {
+        $stdinJson = [Console]::In.ReadToEnd()
+    }
+} catch {
+    $stdinJson = ""
+}
+if ($stdinJson -match '"stop_hook_active"\s*:\s*true') {
+    Write-AdvisoryReport
+    exit 0
+}
+
+# Guard 2: an in_progress phase must exist.
+if ($IN_PROGRESS -le 0) {
+    Write-AdvisoryReport
+    exit 0
+}
+
+# ledger_line_count: total lines across all <plan-dir>/ledger-*.jsonl files.
+function Get-LedgerLineCount {
+    $total = 0
+    $files = Get-ChildItem -Path $PlanDir -Filter "ledger-*.jsonl" -File -ErrorAction SilentlyContinue
+    foreach ($f in $files) {
+        $lines = @(Get-Content $f.FullName -ErrorAction SilentlyContinue)
+        $total += $lines.Count
+    }
+    return $total
+}
+
+$cap = 20
+if ($env:PWF_GATE_CAP -match '^\d+$') {
+    $cap = [int]$env:PWF_GATE_CAP
+}
+
+$blocksFile = Join-Path $PlanDir ".stop_blocks"
+$blocks = 0
+if (Test-Path $blocksFile) {
+    $raw = (Get-Content $blocksFile -Raw -ErrorAction SilentlyContinue)
+    if ($raw -match '^\s*(\d+)') { $blocks = [int]$Matches[1] }
+}
+
+$ledgerFile = Join-Path $PlanDir ".gate_last_ledger"
+$ledgerPrev = 0
+if (Test-Path $ledgerFile) {
+    $raw = (Get-Content $ledgerFile -Raw -ErrorAction SilentlyContinue)
+    if ($raw -match '^\s*(\d+)') { $ledgerPrev = [int]$Matches[1] }
+}
+$ledgerNow = Get-LedgerLineCount
+
+# Guard 4: block-count cap.
+if ($blocks -ge $cap) {
+    Write-AdvisoryReport
+    Write-Host ('[planning-with-files] gate cap reached (' + $blocks + '/' + $cap + ') -- allowing stop.')
+    exit 0
+}
+
+# Guard 5: stall detection.
+if ($blocks -gt 0 -and $ledgerNow -eq $ledgerPrev) {
+    Write-AdvisoryReport
+    Write-Host '[planning-with-files] no progress since last gate block -- allowing stop.'
+    exit 0
+}
+
+# All guards passed: block the stop.
+# Get-FirstInProgressPhase: heading text of the first phase whose Status is
+# in_progress. Plain text only -- no plan body beyond the heading.
+function Get-FirstInProgressPhase {
+    $heading = ""
+    foreach ($line in ($content -split "`n")) {
+        $trimmed = $line.TrimEnd("`r")
+        if ($trimmed -match '^### (.*)$') {
+            $heading = $Matches[1]
+        } elseif ($trimmed -match '\*\*Status:\*\* in_progress' -or $trimmed -match '\[in_progress\]') {
+            return $heading
+        }
+    }
+    return ""
+}
+
+$phaseName = Get-FirstInProgressPhase
+if ($phaseName -eq "") { $phaseName = "unknown phase" }
+
+# JSON-escape: backslash and double-quote only (phase heading is single-line text).
+$phaseEscaped = $phaseName.Replace('\', '\\').Replace('"', '\"')
+
+$newBlocks = $blocks + 1
+try { Set-Content -Path $blocksFile -Value $newBlocks -NoNewline:$false -ErrorAction SilentlyContinue } catch {}
+try { Set-Content -Path $ledgerFile -Value $ledgerNow -NoNewline:$false -ErrorAction SilentlyContinue } catch {}
+
+# Reason built from the JSON-escaped phase name; the surrounding template text
+# has no quotes or backslashes, so only the heading needs escaping.
+$reason = "[planning-with-files] Gated plan incomplete: phase '" + $phaseEscaped + "' is in_progress (" + $COMPLETE + "/" + $TOTAL + " complete, gate block " + $newBlocks + "/" + $cap + "). Finish or update the plan, then stop."
+
+[Console]::Out.Write('{"decision":"block","reason":"' + $reason + '"}' + "`n")
 exit 0
