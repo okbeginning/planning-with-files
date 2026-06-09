@@ -6,7 +6,7 @@
 
 > **Work like Manus** — the AI agent company Meta acquired for **$2 billion**.
 
-[![Benchmark](https://img.shields.io/badge/Benchmark-96.7%25_pass_rate-brightgreen)](docs/evals.md)
+[![Benchmark](https://img.shields.io/badge/Benchmark-96.7%25_pass_rate_(v2.21.0%2C_sonnet--4--6)-brightgreen)](docs/evals.md)
 [![A/B Verified](https://img.shields.io/badge/A%2FB_Blind-3%2F3_wins-brightgreen)](docs/evals.md)
 [![SkillCheck Validated](https://img.shields.io/badge/SkillCheck-Validated-4c1)](https://getskillcheck.com)
 [![Security Verified](https://img.shields.io/badge/Security-Audited_%26_Fixed_v2.21.0-blue)](docs/evals.md)
@@ -328,7 +328,7 @@ Once installed, the AI agent will:
 
 1. **Ask for your task** if no description is provided
 2. **Create `task_plan.md`, `findings.md`, and `progress.md`** in your project directory
-3. **Re-read plan** before major decisions (via PreToolUse hook)
+3. **Re-read plan** before major decisions (via PreToolUse hook in legacy mode; autonomous mode injects at session start and phase transitions instead, dropping the per-tool-call tax on strong models)
 4. **Remind you** to update status after file writes (via PostToolUse hook)
 5. **Store findings** in `findings.md` instead of stuffing context
 6. **Log errors** for future reference
@@ -343,7 +343,9 @@ See [docs/quickstart.md](docs/quickstart.md) for the full 5-step guide.
 
 ## Benchmark Results
 
-Formally evaluated using Anthropic's [skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) framework (v2.22.0). 10 parallel subagents, 5 task types, 30 objectively verifiable assertions, 3 blind A/B comparisons.
+> **Methodology note:** the 96.7% figure comes from the v2.21.0 evaluation run on `claude-sonnet-4-6` (2026-03-06). It measures file-pattern fidelity (does the agent create and maintain the 3-file structure), not goal-drift over long autonomous runs. Newer models and the autonomous-mode work are not yet covered by this number. Full methodology, dataset, and assertion list: [docs/evals.md](docs/evals.md).
+
+Formally evaluated using Anthropic's [skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) framework (v2.22.0), model `claude-sonnet-4-6`, 2026-03-06. 10 parallel subagents, 5 task types, 30 objectively verifiable assertions, 3 blind A/B comparisons.
 
 | Test | with_skill | without_skill |
 |------|-----------|---------------|
