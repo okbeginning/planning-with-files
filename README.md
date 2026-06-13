@@ -8,7 +8,7 @@
 
 > **Work like Manus** — the AI agent company Meta acquired for **$2 billion**.
 >
-> Persistent file-based planning for long-running agentic tasks: crash-proof markdown plans, a deliberate completion gate, and multi-agent shared state on disk.
+> **planning-with-files** is a persistent file-based planning skill for **AI coding agents**. It keeps `task_plan.md`, `findings.md`, and `progress.md` on disk so the agent survives **context loss**, `/clear`, and crashes, with an opt-in completion gate that holds the agent until the plan is actually done. It installs across 60+ agents via the SKILL.md standard.
 
 [![Benchmark](https://img.shields.io/badge/Benchmark-96.7%25_pass_rate_(v2.21.0%2C_sonnet--4--6)-brightgreen)](docs/evals.md)
 [![A/B Verified](https://img.shields.io/badge/A%2FB_Blind-3%2F3_wins-brightgreen)](docs/evals.md)
@@ -477,6 +477,24 @@ planning-with-files/
 ├── LICENSE
 └── README.md
 ```
+
+## FAQ
+
+### How do I stop my coding agent from losing its plan after /clear or a crash?
+
+The plan lives on disk in `task_plan.md`, `findings.md`, and `progress.md`, not only in the context window. At the start of each turn the `UserPromptSubmit` hook re-injects the active plan, and after a `/clear` or a new session the skill re-reads the files from disk (session recovery), so the agent recovers its goals and progress automatically.
+
+### What is the difference between planning-with-files and an agent memory tool?
+
+Agent memory tools (vector stores, knowledge graphs) help an agent recall facts from past sessions. planning-with-files manages active execution state: the phases, status, dependencies, and completion check for the task the agent is working on right now. The problem it solves is planning continuity, not retrieval, and the two are complementary.
+
+### How does this prevent context rot?
+
+Context rot is the drift that sets in as the context window fills and earlier instructions get crowded out. Because the plan is re-injected at the start of each turn from disk, the goals and phase status stay in the model's attention window as the conversation grows. This is an implementation of what Anthropic calls structured note-taking: write durable state to files outside the window, then read it back in when needed.
+
+### Which coding agents does this work with?
+
+Claude Code, OpenAI Codex CLI, Cursor, GitHub Copilot, Kiro, OpenCode, Continue, Pi, CodeBuddy, Factory, Mastra, and 60+ others via the SKILL.md open standard. Installation is one command; see [Quick Install](#quick-install) above.
 
 ## Documentation
 
