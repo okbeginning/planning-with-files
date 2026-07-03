@@ -45,10 +45,29 @@ def detect_ide() -> str:
 
 
 def get_project_dir_claude(project_path: str) -> Path:
-    """Convert project path to Claude's storage path format."""
-    sanitized = project_path.replace('/', '-')
-    if not sanitized.startswith('-'):
-        sanitized = '-' + sanitized
+    """Convert project path to Claude's storage path format.
+
+    Windows paths (C:\\Users\\... or Git Bash /c/Users/...) need the drive
+    colon and backslashes sanitized too, not just forward slashes, and
+    Claude's actual sanitized form has no leading dash for those (the drive
+    letter isn't a separator). Real Unix absolute paths keep their existing
+    leading-dash behavior unchanged (path is used as-is, matching Claude's
+    convention there).
+    """
+    p = project_path
+    if len(p) >= 3 and p[0] == '/' and p[2] == '/' and p[1].isalpha():
+        # Git Bash / MSYS2: /c/Users/... -> C:/Users/...
+        p = p[1].upper() + ':' + p[2:]
+    if ':' in p or '\\' in p:
+        try:
+            p = str(Path(p).resolve())
+        except (OSError, ValueError):
+            pass
+        sanitized = p.replace('\\', '-').replace('/', '-').replace(':', '-')
+    else:
+        sanitized = p.replace('/', '-')
+        if not sanitized.startswith('-'):
+            sanitized = '-' + sanitized
     sanitized = sanitized.replace('_', '-')
     return Path.home() / '.claude' / 'projects' / sanitized
 
@@ -99,7 +118,7 @@ def get_sessions_sorted_opencode(storage_dir: Path) -> List[Path]:
 def get_session_first_timestamp(session_file: Path) -> Optional[str]:
     """Get the timestamp of the first message in a session."""
     try:
-        with open(session_file, 'r') as f:
+        with open(session_file, 'r', encoding='utf-8', errors='replace') as f:
             for line in f:
                 try:
                     data = json.loads(line)
@@ -122,7 +141,7 @@ def scan_for_planning_update(session_file: Path) -> Tuple[int, Optional[str]]:
     last_update_file = None
 
     try:
-        with open(session_file, 'r') as f:
+        with open(session_file, 'r', encoding='utf-8', errors='replace') as f:
             for line_num, line in enumerate(f):
                 if '"Write"' not in line and '"Edit"' not in line:
                     continue
@@ -166,7 +185,7 @@ def extract_messages_from_session(session_file: Path, after_line: int = -1) -> L
     result = []
 
     try:
-        with open(session_file, 'r') as f:
+        with open(session_file, 'r', encoding='utf-8', errors='replace') as f:
             for line_num, line in enumerate(f):
                 if after_line >= 0 and line_num <= after_line:
                     continue
