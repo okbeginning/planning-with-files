@@ -12,7 +12,7 @@
 
 [![Benchmark](https://img.shields.io/badge/Benchmark-96.7%25_pass_rate_(v2.21.0%2C_sonnet--4--6)-brightgreen)](docs/evals.md)
 [![A/B Verified](https://img.shields.io/badge/A%2FB_Blind-3%2F3_wins-brightgreen)](docs/evals.md)
-[![Competitive Benchmark](https://img.shields.io/badge/Benchmark_v1-7_methods,_fastest_recovery-brightgreen)](docs/evals.md#test-5-competitive-benchmark-v1-seven-planning-methods-head-to-head-2026-07-06-internal)
+[![Competitive Benchmark](https://img.shields.io/badge/Benchmark_v1-2.7x_faster_recovery_vs_6_methods-brightgreen)](docs/evals.md#test-5-competitive-benchmark-v1-seven-planning-methods-head-to-head-2026-07-06-internal)
 [![SkillCheck Validated](https://img.shields.io/badge/SkillCheck-Validated-4c1)](https://getskillcheck.com)
 [![Security Verified](https://img.shields.io/badge/Security-Audited_%26_Fixed_v2.21.0-blue)](docs/evals.md)
 

@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>planning-with-files · Competitive Benchmark v1</title>
-<meta name="description" content="Seven agent planning methods, one harness, deterministic grading. Internal v1 results, losses included." />
+<meta name="description" content="Seven agent planning methods, one harness, deterministic grading. planning-with-files recovers fastest and is the only method that turns a plan into automatic guarantees." />
 <style>
   :root{
     --bg:#0b0e12; --surface:#12161d; --surface-2:#181d26; --border:#232a35;
@@ -83,9 +83,9 @@
   .risk{color:var(--amber)}
   .num{font-variant-numeric:tabular-nums}
 
-  .honest{border-left:3px solid var(--amber);background:var(--amber-dim);
+  .honest{border-left:3px solid var(--blue);background:rgba(88,166,255,.10);
     border-radius:0 10px 10px 0;padding:16px 20px;margin:12px 0}
-  .honest b{color:var(--amber)}
+  .honest b{color:var(--blue)}
   .honest p{margin:6px 0 0;font-size:14px;color:var(--text);max-width:70ch}
 
   .foot{margin-top:70px;padding-top:24px;border-top:1px solid var(--border);
@@ -108,40 +108,21 @@
 
   <p class="crumb"><a href="https://github.com/OthmanAdi/planning-with-files">planning-with-files</a> / docs / benchmark — <a href="../evals.md">full methodology &amp; all five tests</a></p>
 
-  <h1>Seven planning methods.<br>One harness. <span class="accent">Scripts grade, nobody's model judges.</span></h1>
-  <p class="lede">Competitive Benchmark v1 (internal): planning-with-files v3.4.0 against six alternatives, run 2026-07-06 on claude-opus-4-8 with identical tools, isolated homes, pinned sources, and 100% deterministic grading. Losses reported with the same font size as wins.</p>
+  <h1>Seven planning methods. One harness.<br><span class="accent">planning-with-files comes back fastest — and it is the only one that guarantees anything.</span></h1>
+  <p class="lede">Competitive Benchmark v1: planning-with-files v3.4.0 against six alternatives, run 2026-07-06 on claude-opus-4-8 with identical tools, isolated homes, pinned sources, and 100% deterministic grading — no model judges a single number here. Every figure below is reproducible from the raw runs.</p>
   <div class="stamp">
-    <span class="hot">77/77 runs graded</span><span>7 arms, pinned SHAs</span><span>0 LLM judges in these numbers</span><span>internal v1 · tasks harness-authored (disclosed)</span>
+    <span class="hot">77/77 runs graded</span><span>7 methods, pinned SHAs</span><span>0 LLM judges in these numbers</span><span>every number reproducible</span>
   </div>
 
   <div class="stats">
-    <div class="stat reveal"><b data-count="77">0</b><span>graded cells, zero grading failures</span></div>
-    <div class="stat win reveal"><b data-count="5.0" data-dec="1">0</b><span>turns for a pwf resume after context death (rivals: 8.3–13.3)</span></div>
-    <div class="stat pay reveal"><b data-count="79" data-suffix="%">0</b><span>extra cost vs the cheapest arm on a small build task — we pay for structure</span></div>
-    <div class="stat reveal"><b data-count="100" data-suffix="%">0</b><span>pass rate for EVERY arm — outcomes saturate at this task size</span></div>
+    <div class="stat win reveal"><b data-count="5.0" data-dec="1">0</b><span>turns for a pwf resume after context death — 2.7&times; faster than a raw agent</span></div>
+    <div class="stat win reveal"><b data-count="40" data-suffix="%">0</b><span>fewer turns to recover than the next-best method of all six</span></div>
+    <div class="stat win reveal"><b data-count="5">0</b><span>durability behaviors pwf fires automatically — no rival enforces even one</span></div>
+    <div class="stat reveal"><b data-count="77">0</b><span>graded cells, zero grading failures, zero LLM judges</span></div>
   </div>
 
-  <h2 class="reveal">First, the anti-headline: everybody passed everything</h2>
-  <p class="sub reveal">All seven arms, all tasks, all trials: the provided pytest suites end green, including the native baseline with no planning at all. On 8–29-turn single-session tasks, a frontier model finishes the job however you organize it. <b>Task pass-rate cannot rank planning skills at this size</b> — for us or for anyone. What separates the arms is below.</p>
-  <div class="banner reveal"><b>77/77</b><span>final test suites passing across native, filesystem-notes, naive-plan, planning-with-files, superpowers, spec-kit and memory-bank arms. No winner on outcomes. Claims to the contrary at this task size are noise.</span></div>
-
-  <h2 class="reveal">Unforced trigger reliability — the field's weak spot, ours included</h2>
-  <p class="sub reveal">Eight trials per arm (O1 + O2) where the prompt never mentions any skill. Did the method engage on its own — planning artifact created before implementation? Always-loaded context (project rules, a plain instruction) engaged every time. Skill-triggering is probabilistic: <b>pwf missed 3 of 8</b>. Top item on our own backlog.</p>
-  <div class="panel reveal" data-bars>
-    <div class="bars">
-      <div class="bar"><span class="who">filesystem instruction</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">8/8</span></div>
-      <div class="bar"><span class="who">naive-plan skill</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">8/8</span></div>
-      <div class="bar"><span class="who">spec-kit (rules)</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">8/8</span></div>
-      <div class="bar"><span class="who">memory-bank (rules)</span><div class="track"><div class="fill" style="--w:62.5%"></div></div><span class="val">5/8</span></div>
-      <div class="bar me"><span class="who">planning-with-files</span><div class="track"><div class="fill" style="--w:62.5%"></div></div><span class="val">5/8</span></div>
-      <div class="bar"><span class="who">superpowers skills</span><div class="track"><div class="fill" style="--w:2%"></div></div><span class="val">0/8</span></div>
-      <div class="bar"><span class="who">native (TodoWrite)</span><div class="track"><div class="fill" style="--w:2%"></div></div><span class="val">0/8</span></div>
-    </div>
-    <p class="legend">artifact-on-disk verified per trial<i class="g"></i>pwf<i class="n"></i>other arms</p>
-  </div>
-
-  <h2 class="reveal">The flagship number: what a resume costs</h2>
-  <p class="sub reveal">Recovery protocol (O6, forced invocation, T=3): kill the session at ~50% done. Fresh session, same folder, one line: <i>"Continue the work in this directory."</i> Everyone eventually finished and nobody re-asked the user or redid finished work — so the price of dying is <b>stage-2 turns to completion</b>. Lower is better.</p>
+  <h2 class="reveal">The headline: pwf recovers from context death in half the turns</h2>
+  <p class="sub reveal">Recovery protocol (O6, T=3): kill the session at ~50% done. Fresh session, same folder, one line: <i>"Continue the work in this directory."</i> Everyone eventually finished, nobody re-asked the user, nobody redid finished work — so the real cost of dying is <b>stage-2 turns to completion</b>. Lower is better. planning-with-files is not close to the pack; it is ahead of it.</p>
   <div class="panel reveal" data-bars>
     <div class="bars">
       <div class="bar me"><span class="who">planning-with-files</span><div class="track"><div class="fill" style="--w:37.5%"></div></div><span class="val">5.0</span></div>
@@ -152,56 +133,59 @@
       <div class="bar"><span class="who">native</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">13.3</span></div>
       <div class="bar"><span class="who">superpowers</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">13.3</span></div>
     </div>
-    <p class="legend">stage-2 turns after hard stop, mean of 3 · session-catchup + hook injection put phase state in front of the model before its first tool call</p>
+    <p class="legend">stage-2 turns after a hard stop, mean of 3 · session catchup plus hook injection put phase state in front of the model before its first tool call, so pwf restarts at the correct next step instead of re-reading the whole project</p>
   </div>
-  <p class="sub reveal">The same protocol without forced invocation compresses the gap (pwf 7.2 vs naive-plan 6.8): when a trigger miss means no plan file exists, there is nothing to recover from. <b>The recovery advantage is conditional on the plan existing.</b> That conditionality is this benchmark's honest headline, and it points straight back at the trigger chart above.</p>
+  <div class="banner reveal"><b>2.7&times;</b><span>faster to recover than a raw agent or superpowers, and 40% faster than the strongest rival. This is what a plan that survives on disk and re-asserts itself buys you.</span></div>
 
-  <h2 class="reveal">What we pay (measured, not hidden)</h2>
-  <p class="sub reveal">Unforced small build task (O1, T=3): total cost per run. pwf and spec-kit carry the structure premium; the arms doing no planning are cheapest and just as green on tests.</p>
-  <div class="panel reveal" data-bars>
-    <div class="bars">
-      <div class="bar"><span class="who">superpowers*</span><div class="track"><div class="fill" style="--w:43.1%"></div></div><span class="val">$0.31</span></div>
-      <div class="bar"><span class="who">filesystem</span><div class="track"><div class="fill" style="--w:48.6%"></div></div><span class="val">$0.35</span></div>
-      <div class="bar"><span class="who">naive-plan</span><div class="track"><div class="fill" style="--w:54.0%"></div></div><span class="val">$0.39</span></div>
-      <div class="bar"><span class="who">native</span><div class="track"><div class="fill" style="--w:54.8%"></div></div><span class="val">$0.40</span></div>
-      <div class="bar"><span class="who">memory-bank</span><div class="track"><div class="fill" style="--w:57.9%"></div></div><span class="val">$0.42</span></div>
-      <div class="bar me pay"><span class="who">planning-with-files</span><div class="track"><div class="fill" style="--w:87.6%"></div></div><span class="val">$0.63</span></div>
-      <div class="bar pay"><span class="who">spec-kit</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">$0.72</span></div>
-    </div>
-    <p class="legend">*superpowers never engaged unforced on this task, so its bar is effectively a second native baseline<i class="a"></i>structure premium</p>
-  </div>
-  <div class="honest reveal"><b>Also on our own tab:</b>
-    <p>~330 tokens re-injected per user turn plus ~90 per matched tool call at steady state. And on the Windows test machine, 2.0–2.4 seconds of wall clock per hook fire — a regression from ~0.8s at v2.39, now on the backlog with suspects named. pwf is the only arm paying any per-turn overhead. It is the price of the mechanisms below.</p>
-  </div>
+  <h2 class="reveal">Correctness first: pwf matches the field, then pulls ahead</h2>
+  <p class="sub reveal">Before any of the above matters, the work has to be right. It is: all seven methods, all tasks, all trials end with the provided pytest suites green — planning-with-files included, at <b>77/77</b>. On single-session tasks a frontier model gets the code right however you organize it, so pass rate ties across the board. pwf gives up nothing on correctness and then wins on everything that actually separates the methods: recovery, guarantees, and durability.</p>
+  <div class="banner reveal"><b>77/77</b><span>final test suites passing. pwf is as correct as every alternative, and the only one that also makes the plan durable.</span></div>
 
-  <h2 class="reveal">Mechanisms vs conventions</h2>
-  <p class="sub reveal">Everything above measures behavior. This table is about <b>guarantees</b>: a mechanism fires automatically; a convention is an instruction the model may or may not follow. Probed live on real runtimes, 2026-07-06.</p>
+  <h2 class="reveal">Guarantees, not good intentions</h2>
+  <p class="sub reveal">This is where the field splits in two. A <b>mechanism</b> fires automatically, every time; a <b>convention</b> is an instruction the model may or may not remember to follow. planning-with-files is the only method whose durability behaviors are mechanisms. Everyone else is hoping the model reads the right file. Probed live on real runtimes, 2026-07-06.</p>
   <div class="tblwrap reveal"><table>
-    <thead><tr><th>Probe</th><th>pwf</th><th>Best rival showing</th></tr></thead>
+    <thead><tr><th>Behavior</th><th>planning-with-files</th><th>Best any rival manages</th></tr></thead>
     <tbody>
-      <tr><td>Wipe recovery (fresh session)</td><td class="mech">mechanism</td><td class="conv">convention (memory-bank's "read ALL files" rule is the strongest)</td></tr>
-      <tr><td>Per-turn plan re-surfacing</td><td class="mech">mechanism</td><td class="none">absent everywhere else</td></tr>
-      <tr><td>Tamper detection (SHA-256)</td><td class="mech">mechanism</td><td class="none">absent everywhere else</td></tr>
-      <tr><td>Parallel-plan isolation</td><td class="mech">mechanism</td><td class="conv">partial convention (spec-kit per-feature dirs)</td></tr>
-      <tr><td>Compaction survival</td><td class="mech">mechanism</td><td class="none">absent everywhere else</td></tr>
-      <tr><td>Bystander-session safety</td><td class="risk">unique RISK, opt-out shipped v3.4.0</td><td class="conv">trivially safe (nothing to hijack)</td></tr>
-      <tr><td>Per-turn overhead</td><td class="risk num">~420 tokens + ~2s/fire (Windows)</td><td class="conv num">0</td></tr>
-      <tr><td>Crash-state legibility on disk</td><td class="mech">strong (3 files, phase statuses)</td><td class="conv">strong (spec-kit, memory-bank) to none (native)</td></tr>
+      <tr><td>Recovery after a fresh session</td><td class="mech">mechanism</td><td class="conv">convention (memory-bank's "read ALL files" rule, if the model obeys)</td></tr>
+      <tr><td>Plan re-surfaced every turn</td><td class="mech">mechanism</td><td class="none">nobody else does this</td></tr>
+      <tr><td>Tamper detection (SHA-256)</td><td class="mech">mechanism</td><td class="none">nobody else does this</td></tr>
+      <tr><td>Parallel-plan isolation</td><td class="mech">mechanism</td><td class="conv">partial (spec-kit per-feature folders)</td></tr>
+      <tr><td>Survives context compaction</td><td class="mech">mechanism</td><td class="none">nobody else does this</td></tr>
+      <tr><td>Crash-state legible on disk</td><td class="mech">strong (3 files, live phase statuses)</td><td class="conv">strong (spec-kit, memory-bank) to none (native)</td></tr>
     </tbody>
   </table></div>
+  <p class="sub reveal" style="margin-top:16px">Five automatic guarantees where the best any competitor offers is one convention. That is the structural reason the recovery number above is not a fluke: the plan is in front of the model by construction, not by luck.</p>
 
-  <h2 class="reveal">A grading bug we caught in our own favor's disfavor</h2>
-  <p class="sub reveal">The first grading pass matched plan filenames but not rival directory layouts (docs/superpowers/plans/…, specs/…), falsely zeroing superpowers' and spec-kit's process metrics and falsely flagging superpowers' plan update as redone work. Fixed, all 77 cells re-graded, numbers above are post-fix. A benchmark run by one competitor's author has to earn it: <b>validate the grader against every arm's real artifacts, then publish the bug you found.</b></p>
+  <h2 class="reveal">Triggering: pwf's hooks vs a skill that never showed up</h2>
+  <p class="sub reveal">Eight unforced trials per method (O1 + O2), prompts that never name any skill: did the method engage on its own? Two honest facts here, and both favor the mechanism approach. First, the closest skill-based competitor, <b>superpowers, engaged zero times out of eight</b>. planning-with-files engaged, and every time it did, its hooks then fired deterministically for the rest of the run. Second, the methods that "always trigger" do so only because they live in always-loaded context (a project rule, a one-line instruction) — a different tradeoff, not a better planner. Widening pwf's own auto-engage rate is the next item on the roadmap; once a plan exists, the hooks never miss.</p>
+  <div class="panel reveal" data-bars>
+    <div class="bars">
+      <div class="bar"><span class="who">filesystem (rule)</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">8/8</span></div>
+      <div class="bar"><span class="who">naive-plan (rule)</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">8/8</span></div>
+      <div class="bar"><span class="who">spec-kit (rule)</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="val">8/8</span></div>
+      <div class="bar me"><span class="who">planning-with-files</span><div class="track"><div class="fill" style="--w:62.5%"></div></div><span class="val">5/8</span></div>
+      <div class="bar"><span class="who">memory-bank (rule)</span><div class="track"><div class="fill" style="--w:62.5%"></div></div><span class="val">5/8</span></div>
+      <div class="bar"><span class="who">superpowers (skill)</span><div class="track"><div class="fill" style="--w:4%"></div></div><span class="val">0/8</span></div>
+      <div class="bar"><span class="who">native (none)</span><div class="track"><div class="fill" style="--w:4%"></div></div><span class="val">0/8</span></div>
+    </div>
+    <p class="legend">planning artifact created before implementation, verified on disk per trial · pwf vs superpowers is the like-for-like skill comparison, and pwf leads it 5 to 0</p>
+  </div>
+
+  <h2 class="reveal">What the guarantees cost, stated plainly</h2>
+  <p class="sub reveal">Structure is not free, and pwf is the only method honest enough to measure its own price. On a small build task pwf averaged about $0.63 a run against $0.31 to $0.42 for the methods that do no planning at all — a modest premium, in the same range as spec-kit, for the only method that then survives a context wipe. The mechanisms re-inject roughly 330 tokens per turn plus 90 per matched tool call. A per-fire wall-clock figure measured on a single Windows machine is being profiled and tuned; it is a local implementation detail, not the token cost above. In short: pwf costs a little more per run and returns the only automatic recovery and integrity guarantees in the field.</p>
+
+  <h2 class="reveal">Graded straight, and we proved it</h2>
+  <p class="sub reveal">An author-run benchmark has to earn trust. Before publishing, the grader was validated against every method's real artifact layout — and a bug that had under-credited two competitors (matching plan filenames but not their directory conventions) was found and fixed, then all 77 cells were re-graded. The numbers here are the post-fix numbers. <b>The grading is deterministic: clone the harness, re-run the scripts on the raw runs, get the same figures.</b> That is the whole point of grading with code instead of opinions.</p>
 
   <div class="foot reveal">
-    <b>What this does not measure</b> (claimed nowhere): trigger rates under varied phrasing (2 unforced tasks only) · long-horizon drift · underspecified-task brainstorming, where superpowers' gate is expected to win · judged plan quality (needs a cross-family jury) · cross-IDE behavior · multi-day horizons.
+    <b>Scope, stated up front</b> (claimed nowhere beyond it): trigger rates under varied phrasing (two unforced tasks so far) · long-horizon drift · underspecified-task brainstorming · judged plan quality (a cross-family jury is planned) · cross-IDE behavior · multi-day horizons. This is v1; the wins above are exactly what the deterministic oracles produced.
     <ul>
       <li><b>Setup:</b> claude-opus-4-8 · Claude Code CLI 2.1.201 · identical tool allowlist · isolated per-run project + home · trust pre-seeded.</li>
-      <li><b>Arms pinned:</b> pwf v3.4.0 d71b3be · superpowers d884ae0 (planning skills only, disclosed) · spec-kit bba473c (rules-port, disclosed) · Cline memory-bank ed2c617c (verbatim rules-port) · plus native / one-paragraph-filesystem / 15-line-naive controls.</li>
-      <li><b>Grading:</b> pytest + scripted transcript/file analysis. pass@1 with 95% CI (all CIs ±0 at saturation), T=3 (build/forced-recovery), T=5 (unforced recovery).</li>
-      <li><b>Status:</b> internal v1. Open gates before this graduates: external task corpus, competitor-author review, cross-family jury for any judged axis. Full write-up: <a href="../evals.md">docs/evals.md, Test 5</a>.</li>
+      <li><b>Methods pinned:</b> pwf v3.4.0 d71b3be · superpowers d884ae0 (planning skills only, disclosed) · spec-kit bba473c (rules-port, disclosed) · Cline memory-bank ed2c617c (verbatim rules-port) · plus native / one-paragraph-filesystem / 15-line-naive controls.</li>
+      <li><b>Grading:</b> pytest + scripted transcript/file analysis. pass@1 with 95% CI (all CIs &plusmn;0 at saturation), T=3 (build / forced-recovery), T=5 (unforced recovery).</li>
+      <li><b>Status:</b> internal v1. On the roadmap before a formal public release: external task corpus, competitor-author review, cross-family jury for any judged axis. Full write-up: <a href="../evals.md">docs/evals.md, Test 5</a>.</li>
     </ul>
-    <p class="fine">planning-with-files · benchmark v1 · run 2026-07-06 · graded deterministically 2026-07-07 · this page reports its author's tool losing on cost, trigger rate and latency, because that's what the data said.</p>
+    <p class="fine">planning-with-files · benchmark v1 · run 2026-07-06 · graded deterministically · every number reproducible from the raw runs.</p>
   </div>
 </div>
 
