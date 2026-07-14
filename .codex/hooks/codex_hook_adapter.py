@@ -83,10 +83,16 @@ def _windows_git_bash() -> tuple[str | None, list[str]]:
     and probe for sh.exe and its sibling bin dirs. This is exactly issue #201:
     the reporter had git bash installed but its usr\\bin was not on PATH.
     """
+    system32 = (Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32").resolve()
     for exe in ("sh", "bash"):
         found = shutil.which(exe)
         if found:
-            return found, [str(Path(found).parent)]
+            candidate = Path(found).resolve()
+            # Windows' bash.exe is a WSL launcher, not a POSIX shell. Selecting
+            # it before Git Bash makes every shell hook fail when WSL has no
+            # installed distro (the common Git-for-Windows-only setup).
+            if candidate.parent != system32:
+                return str(candidate), [str(candidate.parent)]
 
     roots: list[Path] = []
     git = shutil.which("git")
